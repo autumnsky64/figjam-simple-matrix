@@ -12,5 +12,9 @@
     "@figma/plugin-typings": "*",
     "@figma/widget-typings": "*",
     "typescript": "*"
+  },
+  "dependencies": {
+    "eslint-plugin-prettier": "^4.2.1",
+    "typescript-eslint": "^0.0.1-alpha.0"
   }
 }
