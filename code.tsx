@@ -8,25 +8,30 @@ type Columns = {
 }
 
 function WpPostTable() {
-  const names = ['page title', 'path', 'template', 'memo']
+  const defaultNames = ['page title', 'path', 'template', 'memo']
   const defaultWidth = [200, 200, 150, 200]
   const [postName, setPostName] = useSyncedState('postName', '')
   const [columns, setColumns] = useSyncedState<Columns>('colums', {
-    placeholder: names,
+    placeholder: defaultNames,
     width: defaultWidth,
-    names: names
+    names: defaultNames
   })
 
   const borderColor = '#696969'
   const pageTitleBgColor = '#e0ffff'
 
   return (
-    <AutoLayout width={600} direction="vertical" verticalAlignItems="center">
+    <AutoLayout
+      width={600}
+      direction="vertical"
+      verticalAlignItems="center"
+      padding={{ vertical: 16 }}
+    >
       <Input
         placeholder="table title"
         value={postName}
         width="fill-parent"
-        fontSize={24}
+        fontSize={32}
         horizontalAlignText="left"
         onTextEditEnd={(event) => setPostName(event.characters)}
       />
@@ -36,16 +41,22 @@ function WpPostTable() {
         direction="horizontal"
         verticalAlignItems="center"
         fill="#fff"
+        padding={{ vertical: 16 }}
       >
-        {columns.names.map((value, i, names) => {
+        {columns.names.map((name, i, names) => {
           return (
             <Input
-              placeholder={value}
-              value=""
+              placeholder={defaultNames[i]}
+              value={name}
               width={i > names.length ? 200 : columns.width[i]}
               fontSize={24}
               horizontalAlignText="center"
-              onTextEditEnd={(e) => console.log(e.characters)}
+              onTextEditEnd={(event) => {
+                const { names, ...rest } = columns
+                const newNames = [...names]
+                newNames[i] = event.characters
+                setColumns({ names: newNames, ...rest })
+              }}
             />
           )
         })}
