@@ -17,6 +17,11 @@ function WpPostTable() {
     names: defaultNames
   })
 
+  const [data, setData] = useSyncedState<string[][]>('data', [
+    ['cell1-1', 'cell1-2', 'cell1-3', 'cell1-4'],
+    ['cell2-1', 'cell2-2', 'cell2-3', 'cell2-4']
+  ])
+
   const borderColor = '#696969'
   const pageTitleBgColor = '#e0ffff'
 
@@ -58,6 +63,34 @@ function WpPostTable() {
                 setColumns({ names: newNames, ...rest })
               }}
             />
+          )
+        })}
+      </AutoLayout>
+
+      <AutoLayout direction="vertical">
+        {data.map((row, i) => {
+          return (
+            <AutoLayout
+              width={600}
+              direction="horizontal"
+              fill="#fff"
+              padding={{ vertical: 16 }}
+            >
+              {row.map((cell, j) => {
+                return (
+                  <Input
+                    value={cell}
+                    fontSize={24}
+                    onTextEditEnd={(event) => {
+                      const { names, ...rest } = columns
+                      const newNames = [...names]
+                      newNames[i] = event.characters
+                      setColumns({ names: newNames, ...rest })
+                    }}
+                  />
+                )
+              })}
+            </AutoLayout>
           )
         })}
       </AutoLayout>
