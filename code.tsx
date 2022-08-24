@@ -1,30 +1,57 @@
-const { widget } = figma
-const { AutoLayout, Input, Frame, useSyncedState } = widget
+const { widget } = figma;
+const { AutoLayout, Input, Frame, useSyncedState, usePropertyMenu } = widget;
 
 type Columns = {
-  names: string[]
-  width: number[]
-  placeholder: string[]
-}
+  names: string[];
+  width: number[];
+  placeholder: string[];
+};
 
 function WpPostTable() {
-  const defaultNames = ['page title', 'path', 'template', 'memo']
-  const defaultWidth = [200, 200, 150, 200]
-  const tableWidth = defaultWidth.reduce((acc, e) => acc + e)
-  const [postName, setPostName] = useSyncedState('postName', '')
+  const defaultNames = ['page title', 'path', 'template', 'memo'];
+  const defaultWidth = [200, 200, 200, 200];
+  const tableWidth = defaultWidth.reduce((acc, e) => acc + e);
+
+  const [postName, setPostName] = useSyncedState('postName', '');
   const [columns, setColumns] = useSyncedState<Columns>('colums', {
     placeholder: defaultNames,
     width: defaultWidth,
     names: defaultNames
-  })
-
+  });
   const [data, setData] = useSyncedState<string[][]>('data', [
-    ['cell1-1', 'cell1-2', 'cell1-3', 'cell1-4'],
-    ['cell2-1', 'cell2-2', 'cell2-3', 'cell2-4']
-  ])
+    ['', '', '', ''],
+    ['', '', '', '']
+  ]);
 
-  const borderColor = '#696969'
-  const pageTitleBgColor = '#e0ffff'
+  const borderColor = '#696969';
+  const pageTitleBgColor = '#e0ffff';
+
+  usePropertyMenu(
+    [
+      {
+        itemType: 'action',
+        tooltip: 'Add Row',
+        propertyName: 'addRow'
+      },
+      {
+        itemType: 'action',
+        tooltip: 'Delete Row',
+        propertyName: 'deleteLastRow'
+      }
+    ],
+    ({ propertyName }) => {
+      if (propertyName === 'addRow') {
+        const emptyRow = ['', '', '', ''];
+        setData((current) => [...current, emptyRow]);
+      } else if (propertyName === 'deleteLastRow') {
+        setData((current) => {
+          const newData = [...current];
+          newData.pop();
+          return newData;
+        });
+      }
+    }
+  );
 
   return (
     <AutoLayout
@@ -38,7 +65,6 @@ function WpPostTable() {
         value={postName}
         width="fill-parent"
         fontSize={32}
-        horizontalAlignText="left"
         onTextEditEnd={(event) => setPostName(event.characters)}
       />
 
@@ -56,15 +82,14 @@ function WpPostTable() {
               value={name}
               width={200}
               fontSize={24}
-              horizontalAlignText="center"
               onTextEditEnd={(e) => {
-                const { names, ...rest } = columns
-                const newNames = [...names]
-                newNames[i] = e.characters
-                setColumns({ names: newNames, ...rest })
+                const { names, ...rest } = columns;
+                const newNames = [...names];
+                newNames[i] = e.characters;
+                setColumns({ names: newNames, ...rest });
               }}
             />
-          )
+          );
         })}
       </AutoLayout>
 
@@ -83,19 +108,19 @@ function WpPostTable() {
                     value={cell}
                     fontSize={24}
                     onTextEditEnd={(e) => {
-                      const newData = [...data]
-                      newData[i][j] = e.characters
-                      setData(newData)
+                      const newData = [...data];
+                      newData[i][j] = e.characters;
+                      setData(newData);
                     }}
                   />
-                )
+                );
               })}
             </AutoLayout>
-          )
+          );
         })}
       </AutoLayout>
     </AutoLayout>
-  )
+  );
 }
 
-widget.register(WpPostTable)
+widget.register(WpPostTable);
