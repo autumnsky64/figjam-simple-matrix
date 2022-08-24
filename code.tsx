@@ -10,6 +10,7 @@ type Columns = {
 function WpPostTable() {
   const defaultNames = ['page title', 'path', 'template', 'memo']
   const defaultWidth = [200, 200, 150, 200]
+  const tableWidth = defaultWidth.reduce((acc, e) => acc + e)
   const [postName, setPostName] = useSyncedState('postName', '')
   const [columns, setColumns] = useSyncedState<Columns>('colums', {
     placeholder: defaultNames,
@@ -27,7 +28,7 @@ function WpPostTable() {
 
   return (
     <AutoLayout
-      width={600}
+      width={tableWidth}
       direction="vertical"
       verticalAlignItems="center"
       padding={{ vertical: 16 }}
@@ -42,24 +43,24 @@ function WpPostTable() {
       />
 
       <AutoLayout
-        width={600}
+        width="fill-parent"
         direction="horizontal"
         verticalAlignItems="center"
         fill="#fff"
         padding={{ vertical: 16 }}
       >
-        {columns.names.map((name, i, names) => {
+        {columns.names.map((name, i) => {
           return (
             <Input
               placeholder={defaultNames[i]}
               value={name}
-              width={i > names.length ? 200 : columns.width[i]}
+              width={200}
               fontSize={24}
               horizontalAlignText="center"
-              onTextEditEnd={(event) => {
+              onTextEditEnd={(e) => {
                 const { names, ...rest } = columns
                 const newNames = [...names]
-                newNames[i] = event.characters
+                newNames[i] = e.characters
                 setColumns({ names: newNames, ...rest })
               }}
             />
@@ -67,11 +68,10 @@ function WpPostTable() {
         })}
       </AutoLayout>
 
-      <AutoLayout direction="vertical">
+      <AutoLayout direction="vertical" width="fill-parent">
         {data.map((row, i) => {
           return (
             <AutoLayout
-              width={600}
               direction="horizontal"
               fill="#fff"
               padding={{ vertical: 16 }}
@@ -79,13 +79,13 @@ function WpPostTable() {
               {row.map((cell, j) => {
                 return (
                   <Input
+                    width={200}
                     value={cell}
                     fontSize={24}
-                    onTextEditEnd={(event) => {
-                      const { names, ...rest } = columns
-                      const newNames = [...names]
-                      newNames[i] = event.characters
-                      setColumns({ names: newNames, ...rest })
+                    onTextEditEnd={(e) => {
+                      const newData = [...data]
+                      newData[i][j] = e.characters
+                      setData(newData)
                     }}
                   />
                 )
