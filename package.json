@@ -1,7 +1,7 @@
 {
-  "name": "WordPress-posts-table",
+  "name": "figjam-simple-table",
   "version": "1.0.0",
-  "description": "Your Figma widget",
+  "description": "Figma Simple Table widget",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "watch": "npm run build -- --watch",
